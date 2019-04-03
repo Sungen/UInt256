@@ -8,10 +8,10 @@ Pod::Spec.new do |s|
 TODO: Add long description of the pod here.
                        DESC
 
-  s.homepage         = 'https://github.com/kim4apple/UInt256'
+  s.homepage         = 'https://github.com/Sungen/UInt256'
   s.license          = { :type => 'MIT', :file => 'LICENSE' }
-  s.author           = { 'kim4apple' => 'kim4apple@gmail.com' }
-  s.source           = { :git => 'https://github.com/kim4apple/UInt256.git', :tag => s.version.to_s }
+  s.author           = { 'Sungen' => 'jokerwu.sunny@gmail.com' }
+  s.source           = { :git => 'https://github.com/Sungen/UInt256.git', :tag => s.version.to_s }
 
   s.ios.deployment_target = '9.0'
   s.pod_target_xcconfig = { 'ENABLE_BITCODE' => 'NO', 'SWIFT_SUPPRESS_WARNINGS' => 'YES' }
