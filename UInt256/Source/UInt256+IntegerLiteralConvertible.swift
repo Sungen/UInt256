@@ -6,11 +6,11 @@
 //
 import Foundation
 extension UInt256: ExpressibleByIntegerLiteral {
-
+    
     public init(integerLiteral value: IntegerLiteralType) {
         if CGFLOAT_IS_DOUBLE == 1 {
             let nvalue = UInt64(value)
-            
+
             assert(nvalue >= 0, "Unsigned integer should be 0 or larger")
             assert(nvalue <= UInt64.max, "Value too large. Use a decimal string isntead.")
 
@@ -28,4 +28,5 @@ extension UInt256: ExpressibleByIntegerLiteral {
             self.init(nvalue)
         }
     }
+    
 }

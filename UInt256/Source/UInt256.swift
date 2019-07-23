@@ -5,7 +5,6 @@
 //  Created by Sjors Provoost on 23-06-14.
 
 import Foundation
-//import CUInt256
 
 public struct UInt256: CustomStringConvertible { // : UnsignedInteger
     /*
@@ -88,25 +87,25 @@ public struct UInt256: CustomStringConvertible { // : UnsignedInteger
     }
 
     public init() {
-        self.part0 = 0
-        self.part1 = 0
-        self.part2 = 0
-        self.part3 = 0
-        self.part4 = 0
-        self.part5 = 0
-        self.part6 = 0
-        self.part7 = 0
+        part0 = 0
+        part1 = 0
+        part2 = 0
+        part3 = 0
+        part4 = 0
+        part5 = 0
+        part6 = 0
+        part7 = 0
     }
 
     public init(_ value: UInt32) {
-        self.part0 = 0
-        self.part1 = 0
-        self.part2 = 0
-        self.part3 = 0
-        self.part4 = 0
-        self.part5 = 0
-        self.part6 = 0
-        self.part7 = UInt32(value)
+        part0 = 0
+        part1 = 0
+        part2 = 0
+        part3 = 0
+        part4 = 0
+        part5 = 0
+        part6 = 0
+        part7 = UInt32(value)
     }
 
     public init(_ value: Int64) {
@@ -114,28 +113,28 @@ public struct UInt256: CustomStringConvertible { // : UnsignedInteger
         let leftDigit: UInt32 = UInt32(uvalue >> 32)
         let rightDigit: UInt32 = UInt32((uvalue << 32) >> 32)
 
-        self.part0 = 0
-        self.part1 = 0
-        self.part2 = 0
-        self.part3 = 0
-        self.part4 = 0
-        self.part5 = 0
-        self.part6 = leftDigit
-        self.part7 = rightDigit
+        part0 = 0
+        part1 = 0
+        part2 = 0
+        part3 = 0
+        part4 = 0
+        part5 = 0
+        part6 = leftDigit
+        part7 = rightDigit
     }
 
     public init(_ value: UInt64) {
         let leftDigit: UInt32 = UInt32(value >> 32)
         let rightDigit: UInt32 = UInt32((value << 32) >> 32)
 
-        self.part0 = 0
-        self.part1 = 0
-        self.part2 = 0
-        self.part3 = 0
-        self.part4 = 0
-        self.part5 = 0
-        self.part6 = leftDigit
-        self.part7 = rightDigit
+        part0 = 0
+        part1 = 0
+        part2 = 0
+        part3 = 0
+        part4 = 0
+        part5 = 0
+        part6 = leftDigit
+        part7 = rightDigit
     }
 
     public init(_ value: Int) {
@@ -143,29 +142,29 @@ public struct UInt256: CustomStringConvertible { // : UnsignedInteger
         let leftDigit: UInt32 = UInt32(uvalue >> 32)
         let rightDigit: UInt32 = UInt32((uvalue << 32) >> 32)
 
-        self.part0 = 0
-        self.part1 = 0
-        self.part2 = 0
-        self.part3 = 0
-        self.part4 = 0
-        self.part5 = 0
-        self.part6 = leftDigit
-        self.part7 = rightDigit
+        part0 = 0
+        part1 = 0
+        part2 = 0
+        part3 = 0
+        part4 = 0
+        part5 = 0
+        part6 = leftDigit
+        part7 = rightDigit
     }
 
     public init(hexString: String) {
         var hexString = hexString
 
         // First we perform some sanity checks on the string. Then we chop it in 8 pieces and convert each to a UInt32.
-        assert(hexString.characters.count > 0, "Can't be empty")
+        assert(hexString.count > 0, "Can't be empty")
 
         // Assert if string isn't too long
-        assert(hexString.characters.count <= 64, "Too large")
+        assert(hexString.count <= 64, "Too large")
 
         hexString = hexString.uppercased()
 
         // Assert if string has any characters that are not 0-9 or A-F
-        for character in hexString.characters {
+        for character in hexString {
             switch character {
             case "0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "A", "B", "C", "D", "E", "F":
                 assert(true)
@@ -175,24 +174,24 @@ public struct UInt256: CustomStringConvertible { // : UnsignedInteger
         }
 
         // Pad zeros
-        if hexString.characters.count < 64 {
-            for _ in 1 ... (64 - hexString.characters.count) {
+        if hexString.count < 64 {
+            for _ in 1 ... (64 - hexString.count) {
                 hexString = "0" + hexString
             }
         }
 
-        self.part0 = 0
-        self.part1 = 0
-        self.part2 = 0
-        self.part3 = 0
-        self.part4 = 0
-        self.part5 = 0
-        self.part6 = 0
-        self.part7 = 0
+        part0 = 0
+        part1 = 0
+        part2 = 0
+        part3 = 0
+        part4 = 0
+        part5 = 0
+        part6 = 0
+        part7 = 0
 
         var i = 0
 
-        for char in hexString.characters {
+        for char in hexString {
             var increment: UInt32 = 0
 
             switch char {
@@ -220,21 +219,21 @@ public struct UInt256: CustomStringConvertible { // : UnsignedInteger
 
             switch i {
             case 0 ..< 8:
-                self.part0 += UInt32(increment)
+                part0 += UInt32(increment)
             case 8 ..< 16:
-                self.part1 += increment
+                part1 += increment
             case 16 ..< 24:
-                self.part2 += increment
+                part2 += increment
             case 24 ..< 32:
-                self.part3 += increment
+                part3 += increment
             case 32 ..< 40:
-                self.part4 += increment
+                part4 += increment
             case 40 ..< 48:
-                self.part5 += increment
+                part5 += increment
             case 48 ..< 56:
-                self.part6 += increment
+                part6 += increment
             case 56 ..< 64:
-                self.part7 += increment
+                part7 += increment
             default:
                 break
             }
@@ -246,13 +245,13 @@ public struct UInt256: CustomStringConvertible { // : UnsignedInteger
     public init(decimalString: String) {
         // First we perform some sanity checks on the string. Then we convert it to a hex string.
 
-        assert(decimalString.characters.count > 0, "Can't be empty")
+        assert(decimalString.count > 0, "Can't be empty")
 
         // Assert if string longer than 78 characters
-        assert(decimalString.characters.count <= 78, "Too large")
+        assert(decimalString.count <= 78, "Too large")
 
         // Assert if string has any characters that are not 0-9
-        for character in decimalString.characters {
+        for character in decimalString {
             switch character {
             case "0", "1", "2", "3", "4", "5", "6", "7", "8", "9":
                 assert(true)
@@ -264,8 +263,8 @@ public struct UInt256: CustomStringConvertible { // : UnsignedInteger
         // Pad zeros
         var paddedDecimalString = decimalString
 
-        if decimalString.characters.count < 78 {
-            for _ in 1 ... (78 - decimalString.characters.count) {
+        if decimalString.count < 78 {
+            for _ in 1 ... (78 - decimalString.count) {
                 paddedDecimalString = "0" + paddedDecimalString
             }
         }
@@ -294,7 +293,7 @@ public struct UInt256: CustomStringConvertible { // : UnsignedInteger
     }
 
     public static func secureRandom(_ max: UInt256) -> UInt256 {
-        while (true) {
+        while true {
             let candidate = UInt256(arc4random_uniform(UInt32.max), arc4random_uniform(UInt32.max), arc4random_uniform(UInt32.max), arc4random_uniform(UInt32.max), arc4random_uniform(UInt32.max), arc4random_uniform(UInt32.max), arc4random_uniform(UInt32.max), arc4random_uniform(UInt32.max))
 
             if candidate < max {
@@ -309,4 +308,5 @@ public struct UInt256: CustomStringConvertible { // : UnsignedInteger
         let point = UnsafePointer<UInt32>(val)
         return Data(bytes: point, count: 32)
     }
+    
 }

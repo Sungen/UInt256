@@ -5,12 +5,16 @@
 //  Created by Sjors Provoost on 06-07-14.
 //
 
-import XCTest
 @testable import UInt256
+import XCTest
 
 class UInt256TestBitwise: XCTestCase {
-
-    let thousand: Int = 1_000
+    
+    #if DEBUG
+        let million: Int = 10000
+    #else
+        let million: Int = 1_000_000
+    #endif
 
     override func setUp() {
         super.setUp()
@@ -56,8 +60,8 @@ class UInt256TestBitwise: XCTestCase {
 
         var res: UInt256 = 0
 
-        self.measure() {
-            for _: Int in Int(0) ..< Int(self.thousand) {
+        measure {
+            for _ in 0 ... million {
                 res = a << 1
             }
         }
@@ -68,7 +72,7 @@ class UInt256TestBitwise: XCTestCase {
     func testLeftShiftShouldNotMutate() {
         let a = UInt256(hexString: "AAAAAAAAAAA")
         let b = a
-        let _ = a << 1
+        a << 1
 
         XCTAssertEqual(a, b, "")
     }
@@ -76,7 +80,7 @@ class UInt256TestBitwise: XCTestCase {
     func testRightShiftShouldNotMutate() {
         let a = UInt256(hexString: "AAAAAAAAAAA")
         let b = a
-        let _ = a >> 1
+        a >> 1
 
         XCTAssertEqual(a, b, "")
     }
@@ -115,8 +119,8 @@ class UInt256TestBitwise: XCTestCase {
 
         var res = 0
 
-        self.measure() {
-            for _: Int in Int(0) ... Int(self.thousand / 100) {
+        measure {
+            for _ in 0 ... (million / 100) {
                 res = a.highestBit
             }
         }
@@ -125,28 +129,29 @@ class UInt256TestBitwise: XCTestCase {
     }
 
     func testSingleBitAt() {
-        var a = UInt256.singleBitAt(255)
+        var a = UInt256.singleBit(at: 255)
         XCTAssertEqual(a.toHexString, "1", "")
 
-        a = UInt256.singleBitAt(254)
+        a = UInt256.singleBit(at: 254)
         XCTAssertEqual(a.toHexString, "2", "")
 
-        a = UInt256.singleBitAt(0)
+        a = UInt256.singleBit(at: 0)
         XCTAssertEqual(a.toHexString, "8000000000000000000000000000000000000000000000000000000000000000", "")
     }
 
     func testSetBitAt() {
-        var a = UInt256.singleBitAt(255)
-        a.setBitAt(255)
+        var a = UInt256.singleBit(at: 255)
+        a.setBit(at: 255)
 
         XCTAssertEqual(a.toHexString, "1", "")
 
-        self.measure() {
-            for _: Int in Int(0) ... Int(self.thousand) {
-                a.setBitAt(254)
+        measure {
+            for _ in 0 ... million {
+                a.setBit(at: 254)
             }
         }
 
         XCTAssertEqual(a.toHexString, "3", "")
     }
+    
 }

@@ -5,12 +5,16 @@
 //  Created by Sjors Provoost on 06-07-14.
 //
 
-import XCTest
 @testable import UInt256
+import XCTest
 
 class UInt256TestArithmetic: XCTestCase {
-
-    let thousand = 1_000
+    
+    #if DEBUG
+        let million = 1000
+    #else
+        let million = 1_000_000
+    #endif
 
     override func setUp() {
         super.setUp()
@@ -28,8 +32,8 @@ class UInt256TestArithmetic: XCTestCase {
 
         var res = false
 
-        self.measure() {
-            for _ in 1 ... self.thousand {
+        measure {
+            for _ in 1 ... million {
                 res = a != b
             }
         }
@@ -43,8 +47,8 @@ class UInt256TestArithmetic: XCTestCase {
 
         var res = false
 
-        self.measure() {
-            for _ in 1 ... self.thousand {
+        measure {
+            for _ in 1 ... million {
                 res = b > a
             }
         }
@@ -83,8 +87,8 @@ class UInt256TestArithmetic: XCTestCase {
 
         var result: UInt256 = 0
 
-        self.measure() {
-            for _ in 1 ... self.thousand {
+        measure {
+            for _ in 1 ... million {
                 result = a + b
             }
         }
@@ -122,9 +126,11 @@ class UInt256TestArithmetic: XCTestCase {
 
         let c = UInt256(decimalString: "148873535527910577802119878898817695674")
 
-        self.measure() {
-            for _ in 1 ... self.thousand / 100 {
-                let _ = a - b
+        var res: UInt256 = 0
+
+        measure {
+            for _ in 1 ... million / 100 {
+                res = a - b
             }
         }
 
@@ -196,7 +202,6 @@ class UInt256TestArithmetic: XCTestCase {
     //    }
 
     func testMultiplyToTuple() {
-
         let a = UInt256(hexString: "8888888888888888888888888888888888888888888888888888888888888888")
         let b = UInt256(hexString: "0000000000000000000000000000000000000000000000000000000000000002")
         let c = (UInt256(hexString: "0000000000000000000000000000000000000000000000000000000000000001"), UInt256(hexString: "1111111111111111111111111111111111111111111111111111111111111110"))
@@ -268,28 +273,13 @@ class UInt256TestArithmetic: XCTestCase {
 
         var res: UInt256 = 0
 
-        self.measure() {
-            for _ in 1 ... self.thousand / 100 {
+        measure {
+            for _ in 1 ... million / 100 {
                 res = a / b
             }
         }
 
         XCTAssertEqual(res, c, "\(a) / \(b) = \(res) != \(c)")
-    }
-
-    func testDivideBigLiteral() {
-        let a = UInt256(decimalString: "106030040005000600070")
-
-        if CGFLOAT_IS_DOUBLE == 1 {
-        let result = "\(a / 1000000000000000000)"
-        let c = "106"
-        XCTAssertEqual(result, c, "\(a) / \(1000000000000000000) = \(result) != \(c)")
-        } else {
-            let b = UInt256(decimalString: "1000000000000000000")
-            let result = "\(a / b)"
-            let c = "106"
-            XCTAssertEqual(result, c, "\(a) / \(b) = \(result) != \(c)")
-        }
     }
 
     func testModuloLargest128bitPrime() {
@@ -321,8 +311,8 @@ class UInt256TestArithmetic: XCTestCase {
 
         var res: UInt256 = 0
 
-        self.measure() {
-            for _ in 1 ... self.thousand / 100 {
+        measure {
+            for _ in 1 ... million / 100 {
                 res = a % b
             }
         }
@@ -340,9 +330,8 @@ class UInt256TestArithmetic: XCTestCase {
 
         var res: UInt256 = 0
 
-        self.measure() {
-            for _: UInt16 in UInt16(0) ... UInt16(self.thousand / 1_000_00) {
-
+        measure {
+            for _ in UInt16(0) ... UInt16(million / 100_000) {
                 res = a.modInverse(m)
             }
         }
@@ -367,10 +356,8 @@ class UInt256TestArithmetic: XCTestCase {
 
         var res: UInt256 = 0
 
-        self.measure() {
-
-            for _ in 1 ... self.thousand {
-
+        measure {
+            for _ in 1 ... million {
                 res = a * a // 0.9999...% of 32 bit max
             }
         }
@@ -387,8 +374,8 @@ class UInt256TestArithmetic: XCTestCase {
         #if DEBUG
             res = a * a // 0.9999999...% of 64 bit max
         #else
-            self.measure() {
-                for _ in 1 ... self.thousand {
+            measure {
+                for _ in 1 ... million {
                     res = a * a
                 }
             }
@@ -430,8 +417,8 @@ class UInt256TestArithmetic: XCTestCase {
         a = UInt256(decimalString: "8324499029011133232")
         c = UInt256(decimalString: "69297284084007299998947387404854765824")
 
-        self.measure() {
-            for _ in 1 ... self.thousand / 100 {
+        measure {
+            for _ in 1 ... million / 100 {
                 res = a * a
             }
         }
@@ -466,9 +453,8 @@ class UInt256TestArithmetic: XCTestCase {
         a = UInt256(decimalString: "18446744073709551614") // 0.9999999...% of 128 bit max
         c = UInt256(decimalString: "340282366920938463389587631136930004996")
 
-        self.measure() {
-
-            for _ in 1 ... self.thousand / 100 {
+        measure {
+            for _ in 1 ... million / 100 {
                 res = a * a // 0.9999999...% of 128 bit max
             }
         }
@@ -498,10 +484,8 @@ class UInt256TestArithmetic: XCTestCase {
 
         var res: UInt256 = 0
 
-        self.measure() {
-
-            for _ in 1 ... self.thousand / 100 {
-
+        measure {
+            for _ in 1 ... million / 100 {
                 res = a * a // 0.9999999...% of UInt256 max
             }
         }
@@ -510,18 +494,22 @@ class UInt256TestArithmetic: XCTestCase {
     }
 
     func testMultiplicationToTupleWithoutRecursion() {
+        let p = UInt256(0xFFFF_FFFF, 0xFFFF_FFFF, 0xFFFF_FFFF, 0xFFFF_FFFF, 0xFFFF_FFFF, 0xFFFF_FFFF, 0xFFFF_FFFE, 0xFFFF_FC2F)
+
         // a and b chosen such that x₁ + x₀ and y₁_plus_y₀ don't overflow
-        let a = UInt256(0x502b5092, 0x9d7b11ed, 0x52d00e63, 0x11cd10ff, 0x92956188, 0xdd566bc4, 0x52d0ebaa, 0x95f8234c)
+        let a = UInt256(0x502B_5092, 0x9D7B_11ED, 0x52D0_0E63, 0x11CD_10FF, 0x9295_6188, 0xDD56_6BC4, 0x52D0_EBAA, 0x95F8_234C)
 
-        let b = UInt256(0x17c10759, 0xf6e128f2, 0x0704c711, 0x914fa8bf, 0xaa514b51, 0xa371522d, 0xfc5bd655, 0x162050ce)
+        let b = UInt256(0x17C1_0759, 0xF6E1_28F2, 0x0704_C711, 0x914F_A8BF, 0xAA51_4B51, 0xA371_522D, 0xFC5B_D655, 0x1620_50CE)
 
-        let (left, right) = (UInt256(0x07705732, 0x4641effd, 0x378f46bc, 0x92edec71, 0x75c31faf, 0xc2e21a5d, 0x69bfbb9f, 0x07abd941), UInt256(0x98baaae0, 0xf56e67d7, 0x455c1ce2, 0x8617a3a9, 0xc9cd081a, 0x1afb578a, 0xa0e2446b, 0x2a342728))
+        let (left, right) = (UInt256(0x0770_5732, 0x4641_EFFD, 0x378F_46BC, 0x92ED_EC71, 0x75C3_1FAF, 0xC2E2_1A5D, 0x69BF_BB9F, 0x07AB_D941), UInt256(0x98BA_AAE0, 0xF56E_67D7, 0x455C_1CE2, 0x8617_A3A9, 0xC9CD_081A, 0x1AFB_578A, 0xA0E2_446B, 0x2A34_2728))
+
+        let product = UInt256(0x42B9_61BC, 0x4EA2_93F4, 0xE216_FF00, 0xB9DE_205B, 0xFA5B_103E, 0x45A1_B1AA, 0x44B9_7F03, 0xD4C9_7CB8)
 
         var resLeft: UInt256 = 0
         var resRight: UInt256 = 0
 
-        self.measure() {
-            for _ in 1 ... self.thousand / 1000 {
+        measure {
+            for _ in 1 ... million / 1000 {
                 (resLeft, resRight) = a * b
             }
         }
@@ -531,17 +519,19 @@ class UInt256TestArithmetic: XCTestCase {
     }
 
     func testMultiplicationInSecp256k1() {
-        let a = UInt256(0x9b992796, 0x19237faf, 0x0c13c344, 0x614c46a9, 0xe7357341, 0xc6e4e042, 0xa9b1311a, 0x8622deaa)
+        let a = UInt256(0x9B99_2796, 0x1923_7FAF, 0x0C13_C344, 0x614C_46A9, 0xE735_7341, 0xC6E4_E042, 0xA9B1_311A, 0x8622_DEAA)
 
-        let b = UInt256(0xe7f1caa6, 0x36baa277, 0x9cfd6cf9, 0x696cf826, 0xf013db03, 0x7aa08f3d, 0x5c2dfaf9, 0xdb5d255b)
+        let b = UInt256(0xE7F1_CAA6, 0x36BA_A277, 0x9CFD_6CF9, 0x696C_F826, 0xF013_DB03, 0x7AA0_8F3D, 0x5C2D_FAF9, 0xDB5D_255B)
 
-        let(left, right) = (UInt256(0x8cfa2912, 0x94cc8c2c, 0x827a9ef6, 0x977f6b69, 0x1d24b810, 0xf085c437, 0xabd13f27, 0x942da0b5), UInt256(0xede973cf, 0x7a14db61, 0x0dfe857e, 0x382bc650, 0x71af459e, 0x27425f0c, 0x36b67051, 0x0a55b86e))
+        let (left, right) = (UInt256(0x8CFA_2912, 0x94CC_8C2C, 0x827A_9EF6, 0x977F_6B69, 0x1D24_B810, 0xF085_C437, 0xABD1_3F27, 0x942D_A0B5), UInt256(0xEDE9_73CF, 0x7A14_DB61, 0x0DFE_857E, 0x382B_C650, 0x71AF_459E, 0x2742_5F0C, 0x36B6_7051, 0x0A55_B86E))
+
+        let product = UInt256(0x896C_BFE5, 0xDD32_7035, 0x9B76_9BFF, 0x8299_6A89, 0x9B57_827B, 0xC195_76AB, 0x1170_4459, 0x9336_D1F0)
 
         var resLeft: UInt256 = 0
         var resRight: UInt256 = 0
 
-        self.measure() {
-            for _ in 0 ... self.thousand / 1000 {
+        measure {
+            for _ in 0 ... (million / 1000) {
                 (resLeft, resRight) = a * b
             }
         }
@@ -551,21 +541,21 @@ class UInt256TestArithmetic: XCTestCase {
     }
 
     func testModTupleInSecp256k1() {
+        let p = UInt256(0xFFFF_FFFF, 0xFFFF_FFFF, 0xFFFF_FFFF, 0xFFFF_FFFF, 0xFFFF_FFFF, 0xFFFF_FFFF, 0xFFFF_FFFE, 0xFFFF_FC2F)
 
-        let p = UInt256(0xffffffff, 0xffffffff, 0xffffffff, 0xffffffff, 0xffffffff, 0xffffffff, 0xfffffffe, 0xfffffc2f)
+        let (left, right) = (UInt256(0x8CFA_2912, 0x94CC_8C2C, 0x827A_9EF6, 0x977F_6B69, 0x1D24_B810, 0xF085_C437, 0xABD1_3F27, 0x942D_A0B5), UInt256(0xEDE9_73CF, 0x7A14_DB61, 0x0DFE_857E, 0x382B_C650, 0x71AF_459E, 0x2742_5F0C, 0x36B6_7051, 0x0A55_B86E))
 
-        let(left, right) = (UInt256(0x8cfa2912, 0x94cc8c2c, 0x827a9ef6, 0x977f6b69, 0x1d24b810, 0xf085c437, 0xabd13f27, 0x942da0b5), UInt256(0xede973cf, 0x7a14db61, 0x0dfe857e, 0x382bc650, 0x71af459e, 0x27425f0c, 0x36b67051, 0x0a55b86e))
-
-        let mod = UInt256(0x896cbfe5, 0xdd327035, 0x9b769bff, 0x82996a89, 0x9b57827b, 0xc19576ab, 0x11704459, 0x9336d1f0)
+        let mod = UInt256(0x896C_BFE5, 0xDD32_7035, 0x9B76_9BFF, 0x8299_6A89, 0x9B57_827B, 0xC195_76AB, 0x1170_4459, 0x9336_D1F0)
 
         var result: UInt256 = 0
 
-        self.measure() {
-            for _ in 1 ... (self.thousand / 1_00) {
+        measure {
+            for _ in 1 ... (million / 100) {
                 result = (left, right) % p
             }
         }
 
         XCTAssertTrue(result == mod, result.description)
     }
+    
 }

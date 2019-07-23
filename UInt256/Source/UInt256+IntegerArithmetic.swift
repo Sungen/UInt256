@@ -5,34 +5,32 @@
 //  Created by Sjors Provoost on 06-07-14.
 //
 import Foundation
-//import CUInt256
-extension UInt256 { // : BinaryInteger, UnsignedInteger
-  
-  public typealias Words = UInt32
-  
-  public typealias Magnitude = UInt256
-  
-    public static func *=(lhs: inout UInt256, rhs: UInt256) {
-      lhs = lhs * rhs
+
+extension UInt256 { // BinaryInteger, UnsignedInteger
+    
+    public typealias Words = UInt32
+
+    public typealias Magnitude = UInt256
+
+    public static func *= (lhs: inout UInt256, rhs: UInt256) {
+        lhs = lhs * rhs
     }
-  
+
     public static var isSigned: Bool {
-      return false
+        return false
     }
-  
+
 //    public var trailingZeroBitCount: Int {
 //      return 0
 //    }
-  
-    public static func /=(lhs: inout UInt256, rhs: UInt256) {
-      lhs = lhs / rhs
+
+    public static func /= (lhs: inout UInt256, rhs: UInt256) {
+        lhs = lhs / rhs
     }
-  
-    public static func %=(lhs: inout UInt256, rhs: UInt256) {
-      lhs = lhs % rhs
+
+    public static func %= (lhs: inout UInt256, rhs: UInt256) {
+        lhs = lhs % rhs
     }
-  
- 
 
     public static func addWithOverflow(_ lhs: UInt256, _ rhs: UInt256) -> (UInt256, overflow: Bool) {
         var sum = UInt256.allZeros
@@ -40,7 +38,7 @@ extension UInt256 { // : BinaryInteger, UnsignedInteger
         for i in (0 ... 7).reversed() {
             sum[i] = sum[i] &+ lhs[i]
 
-            if sum[i] < lhs[i] && i > 0 {
+            if sum[i] < lhs[i], i > 0 {
                 sum[i - 1] = 1
             }
 
@@ -48,7 +46,7 @@ extension UInt256 { // : BinaryInteger, UnsignedInteger
 
             sum[i] = sumBefore &+ rhs[i]
 
-            if sum[i] < sumBefore && i > 0 {
+            if sum[i] < sumBefore, i > 0 {
                 sum[i - 1] = sum[i - 1] + 1 // Will either be 1 or 2
             }
         }
@@ -99,13 +97,13 @@ extension UInt256 { // : BinaryInteger, UnsignedInteger
 
         for i in 0 ..< 8 { num[i] = numerator[i]; den[i] = denominator[i] }
 
-      let result = remainderWithOverflowC(&num, &den)
+        let result = remainderWithOverflowC(&num, &den)
 
         return (UInt256(result![0], result![1], result![2], result![3], result![4], result![5], result![6], result![7]), false)
     }
 
     // I have no idea what this is supposed to do:
-  public func toIntMax() -> Int64 {
+    public func toIntMax() -> Int64 {
         return Int64(self[6] << 32 + self[7])
     }
 
@@ -122,11 +120,11 @@ extension UInt256 { // : BinaryInteger, UnsignedInteger
         var x0positive = true
         var x1: UInt256 = 1
 
-        if (b == 1) {
+        if b == 1 {
             return 1
         }
 
-        while (a > 1) {
+        while a > 1 {
             q = a / b
             t = b
             b = a % b
@@ -138,15 +136,16 @@ extension UInt256 { // : BinaryInteger, UnsignedInteger
             x1 = t
         }
 
-        if (!x0positive) {
+        if !x0positive {
             x1 = x1 &+ b0
         }
 
         return x1
     }
+    
 }
 
-public func / (numerator: UInt256, denominator: UInt256) -> (UInt256) {
+public func / (numerator: UInt256, denominator: UInt256) -> UInt256 {
     let (res, trouble) = UInt256.divideWithOverflow(numerator, denominator)
     assert(!trouble, "Trouble")
     return res
@@ -160,7 +159,7 @@ public func % (numerator: UInt256, denominator: UInt256) -> UInt256 {
 
 public func % (lhs: (UInt256, UInt256), rhs: UInt256) -> UInt256 {
     // Source: http://www.hackersdelight.org/MontgomeryMultiplication.pdf (page 5)
-    var(x, y) = lhs
+    var (x, y) = lhs
     let z = rhs
 
     assert(x < z, "Can't calculate modulo")
@@ -199,11 +198,11 @@ public func % (lhs: (UInt256, UInt256), rhs: UInt256) -> UInt256 {
     return UInt256(xC[0], xC[1], xC[2], xC[3], xC[4], xC[5], xC[6], xC[7])
 }
 
-public func += (lhs: inout UInt256, rhs: UInt256) -> () {
+public func += (lhs: inout UInt256, rhs: UInt256) -> Void {
     lhs = lhs + rhs
 }
 
-public func -= (lhs: inout UInt256, rhs: UInt256) -> () {
+public func -= (lhs: inout UInt256, rhs: UInt256) -> Void {
     lhs = lhs - rhs
 }
 
@@ -262,9 +261,9 @@ public func * (lhs: UInt256, rhs: UInt256) -> UInt256 {
         return 0 // Don't use lhs == 0, because it casts to a signed 32 bit integer
     }
 
-    if lhs == UInt256.singleBitAt(255) {
+    if lhs == UInt256.singleBit(at: 255) {
         return rhs
-    } else if rhs == UInt256.singleBitAt(255) {
+    } else if rhs == UInt256.singleBit(at: 255) {
         return lhs
     }
 
@@ -272,8 +271,7 @@ public func * (lhs: UInt256, rhs: UInt256) -> UInt256 {
     if CGFLOAT_IS_DOUBLE == 1 {
         let thirtyTwoBitMask = UInt256(0, 0, 0, 0, 0, 0, 0, UInt32.max)
 
-        if lhs == lhs & thirtyTwoBitMask && rhs == rhs & thirtyTwoBitMask {
-
+        if lhs == lhs & thirtyTwoBitMask, rhs == rhs & thirtyTwoBitMask {
             let product: UInt64 = UInt64(lhs[7]) * UInt64(rhs[7])
             let productLhs: UInt64 = product >> 32
             let productRhs: UInt64 = product & 0b0000_0000_0000_0000_0000_0000_0000_0000_1111_1111_1111_1111_1111_1111_1111_1111
@@ -282,8 +280,7 @@ public func * (lhs: UInt256, rhs: UInt256) -> UInt256 {
 
         let sixtyFourBitMask = UInt256(0, 0, 0, 0, 0, 0, UInt32.max, UInt32.max)
 
-        if lhs == lhs & sixtyFourBitMask && rhs == rhs & sixtyFourBitMask {
-
+        if lhs == lhs & sixtyFourBitMask, rhs == rhs & sixtyFourBitMask {
             var lhsC: [UInt32] = [0, 0, 0, 0, 0, 0, 0, 0]
             var rhsC: [UInt32] = [0, 0, 0, 0, 0, 0, 0, 0]
             var res: [UInt32] = [0, 0, 0, 0, 0, 0, 0, 0]
@@ -303,15 +300,14 @@ public func * (lhs: UInt256, rhs: UInt256) -> UInt256 {
 
         let sixteenBitMask = UInt256(0, 0, 0, 0, 0, 0, 0, 65535)
 
-        if lhs == lhs & sixteenBitMask && rhs == rhs & sixteenBitMask {
+        if lhs == lhs & sixteenBitMask, rhs == rhs & sixteenBitMask {
             return UInt256(0, 0, 0, 0, 0, 0, 0, lhs[7] * rhs[7])
         }
 
         // We're on a 32 bit system, check if it's a 32 bit bit number
         let thirtyTwoBitMask = UInt256(0, 0, 0, 0, 0, 0, 0, UInt32.max)
 
-        if lhs == lhs & thirtyTwoBitMask && rhs == rhs & thirtyTwoBitMask {
-
+        if lhs == lhs & thirtyTwoBitMask, rhs == rhs & thirtyTwoBitMask {
             // Karatsuba
 
             var x₁: UInt256
@@ -320,10 +316,10 @@ public func * (lhs: UInt256, rhs: UInt256) -> UInt256 {
             var y₀: UInt256
 
             x₁ = UInt256(0, 0, 0, 0, 0, 0, 0, lhs[7] >> 16)
-            x₀ = UInt256(0, 0, 0, 0, 0, 0, 0, lhs[7] & 0x0000FFFF)
+            x₀ = UInt256(0, 0, 0, 0, 0, 0, 0, lhs[7] & 0x0000_FFFF)
 
             y₁ = UInt256(0, 0, 0, 0, 0, 0, 0, rhs[7] >> 16)
-            y₀ = UInt256(0, 0, 0, 0, 0, 0, 0, rhs[7] & 0x0000FFFF)
+            y₀ = UInt256(0, 0, 0, 0, 0, 0, 0, rhs[7] & 0x0000_FFFF)
 
             // Part of the calculation can be done using UInt32's
             let z₂ = x₁[7] * y₁[7]
@@ -351,7 +347,7 @@ public func * (lhs: UInt256, rhs: UInt256) -> UInt256 {
 
     let hundredTwentyEightBitMask = UInt256(0, 0, 0, 0, UInt32.max, UInt32.max, UInt32.max, UInt32.max)
 
-    if lhs == lhs & sixtyFourBitMask && rhs == rhs & sixtyFourBitMask {
+    if lhs == lhs & sixtyFourBitMask, rhs == rhs & sixtyFourBitMask {
         x₁ = UInt256(0, 0, 0, 0, 0, 0, 0, lhs[6])
         x₀ = UInt256(0, 0, 0, 0, 0, 0, 0, lhs[7])
 
@@ -359,7 +355,7 @@ public func * (lhs: UInt256, rhs: UInt256) -> UInt256 {
         y₀ = UInt256(0, 0, 0, 0, 0, 0, 0, rhs[7])
 
         bitSize = 64
-    } else if lhs == lhs & hundredTwentyEightBitMask && rhs == rhs & hundredTwentyEightBitMask {
+    } else if lhs == lhs & hundredTwentyEightBitMask, rhs == rhs & hundredTwentyEightBitMask {
         x₁ = UInt256(0, 0, 0, 0, 0, 0, lhs[4], lhs[5])
         x₀ = UInt256(0, 0, 0, 0, 0, 0, lhs[6], lhs[7])
 
@@ -390,7 +386,7 @@ public func * (lhs: UInt256, rhs: UInt256) -> UInt256 {
     //    println(z₁)
     //    println(z₂)
 
-    return z₂ << (bitSize) + z₀ + z₁ << (bitSize / 2)
+    return z₂ << bitSize + z₀ + z₁ << (bitSize / 2)
 }
 
 public func * (lhs: UInt256, rhs: UInt256) -> (UInt256, UInt256) {
@@ -425,7 +421,7 @@ public func * (lhs: UInt256, rhs: UInt256) -> (UInt256, UInt256) {
     var z₁: UInt256?
     var z₁tuple: (UInt256, UInt256)?
 
-    if x₁_plus_x₀ & UInt256.singleBitAt(127) != 0 || y₁_plus_y₀ & UInt256.singleBitAt(127) != 0 {
+    if x₁_plus_x₀ & UInt256.singleBit(at: 127) != 0 || y₁_plus_y₀ & UInt256.singleBit(at: 127) != 0 {
         let z₁subtotal: (UInt256, UInt256) = x₁_plus_x₀ * y₁_plus_y₀
 
         let (left, right) = z₁subtotal
@@ -433,7 +429,6 @@ public func * (lhs: UInt256, rhs: UInt256) -> (UInt256, UInt256) {
         if left == 0 { // right represents the full value of z₁subtotal, so this will not overflow:
             z₁ = right - z₂ - z₀
         } else {
-
             let addSafe = z₂ &+ z₀
             if addSafe >= z₂ { // z₂ + z₀ doesn't overflow
                 if right >= addSafe { // subtraction won't overflow
@@ -472,22 +467,22 @@ public func * (lhs: UInt256, rhs: UInt256) -> (UInt256, UInt256) {
         if productRight < productRightBefore {
             productLeft += 1
         }
-        
+
         productLeft = productLeft + (z₁right >> 128)
         productLeft = productLeft + (z₁left << 128)
-        
+
     } else {
         let productRightBefore = productRight
         productRight = productRight &+ (z₁! << 128)
-        
+
         if productRight < productRightBefore {
             // Leaving this line out will not be detected by any test (but will cause addBig in
             // ECurve test to hit an overflow.
             productLeft += 1
         }
-        
+
         productLeft = productLeft + (z₁! >> 128)
     }
-    
+
     return (productLeft, productRight)
 }

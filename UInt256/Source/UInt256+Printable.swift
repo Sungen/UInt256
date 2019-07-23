@@ -6,13 +6,14 @@
 //
 
 extension UInt256 {
-    public var description: String { return self.toDecimalString }
+    
+    public var description: String { return toDecimalString }
 
     public var toDecimalString: String {
         if self == 0 {
             return 0.description
         }
-        return BaseConverter.hexToDec(self.toHexString)
+        return BaseConverter.hexToDec(toHexString)
     }
 
     public var toHexString: String {
@@ -20,13 +21,12 @@ extension UInt256 {
     }
 
     public func toHexStringOfLength(_ length: Int?) -> String {
-
         var result: String = ""
 
         for int in self {
             var paddedHexString = BaseConverter.decToHex(int.description)
-            if paddedHexString.characters.count < 8 {
-                for _ in 1 ... (8 - paddedHexString.characters.count) {
+            if paddedHexString.count < 8 {
+                for _ in 1 ... (8 - paddedHexString.count) {
                     paddedHexString = "0" + paddedHexString
                 }
             }
@@ -38,7 +38,7 @@ extension UInt256 {
         var unpaddedResult = ""
         var didEncounterFirstNonZeroDigit = false
 
-        for digit in result.characters {
+        for digit in result {
             if digit != "0" {
                 didEncounterFirstNonZeroDigit = true
             }
@@ -52,7 +52,7 @@ extension UInt256 {
         }
 
         if length != nil {
-            let resultLength = unpaddedResult.characters.count
+            let resultLength = unpaddedResult.count
             if resultLength < length! {
                 for _ in 0 ..< (length! - resultLength) {
                     unpaddedResult = "0" + unpaddedResult
@@ -62,4 +62,5 @@ extension UInt256 {
 
         return unpaddedResult
     }
+    
 }

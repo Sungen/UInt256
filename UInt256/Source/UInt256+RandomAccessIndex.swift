@@ -7,8 +7,8 @@
 
 // TODO: Add tests for this.
 
-public extension UInt256 {
-
+extension UInt256 {
+    
     public func distanceTo(_ other: UInt256) -> Int {
         let distance = other - self
         assert(distance <= UInt256(0, 0, 0, 0, 0, 0, 0, UInt32.max), "Too far")
@@ -18,4 +18,5 @@ public extension UInt256 {
     public func advanced(by distance: Int) -> UInt256 {
         return self + UInt256(distance)
     }
+    
 }

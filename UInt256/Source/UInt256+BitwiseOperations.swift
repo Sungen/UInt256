@@ -5,7 +5,8 @@
 //  Created by Sjors Provoost on 06-07-14.
 //
 
-extension UInt256 { //: FixedWidthInteger 
+extension UInt256 { //: FixedWidthInteger
+    
     var highestBit: Int {
         var bitLength: UInt32 = 256
         for int in self {
@@ -20,14 +21,14 @@ extension UInt256 { //: FixedWidthInteger
         return Int(bitLength)
     }
 
-    static func singleBitAt(_ position: Int) -> (UInt256) {
+    static func singleBit(at position: Int) -> UInt256 {
         switch position {
         case 0:
-            return UInt256(2147483648, 0, 0, 0, 0, 0, 0, 0)
+            return UInt256(2_147_483_648, 0, 0, 0, 0, 0, 0, 0)
         case 255:
             return UInt256(0, 0, 0, 0, 0, 0, 0, 1)
         default:
-            var result: UInt256 = self.allZeros
+            var result: UInt256 = allZeros
             let index: Int = position / 32
             let bit: Int = 31 - (position % 32)
 
@@ -37,16 +38,17 @@ extension UInt256 { //: FixedWidthInteger
         }
     }
 
-    public mutating func setBitAt(_ position: Int) -> () {
-        self = (self & ~UInt256.singleBitAt(position)) | UInt256.singleBitAt(position)
+    public mutating func setBit(at position: Int) {
+        self = (self & ~UInt256.singleBit(at: position)) | UInt256.singleBit(at: position)
     }
 
-    mutating func unsetBitAt(_ position: Int) -> () {
-        self = self & ~UInt256.singleBitAt(position)
+    mutating func unsetBit(at position: Int) {
+        self = self & ~UInt256.singleBit(at: position)
     }
+    
 }
 
-public func &(lhs: UInt256, rhs: UInt256) -> UInt256 {
+public func & (lhs: UInt256, rhs: UInt256) -> UInt256 {
     var res: UInt256 = UInt256.allZeros
 
     for i in 0 ..< 8 {
@@ -57,7 +59,7 @@ public func &(lhs: UInt256, rhs: UInt256) -> UInt256 {
     return res
 }
 
-public func |(lhs: UInt256, rhs: UInt256) -> UInt256 {
+public func | (lhs: UInt256, rhs: UInt256) -> UInt256 {
     var res: UInt256 = UInt256.allZeros
 
     for i in 0 ..< 8 {
@@ -67,7 +69,7 @@ public func |(lhs: UInt256, rhs: UInt256) -> UInt256 {
     return res
 }
 
-public func ^(lhs: UInt256, rhs: UInt256) -> UInt256 {
+public func ^ (lhs: UInt256, rhs: UInt256) -> UInt256 {
     var res: UInt256 = UInt256.allZeros
 
     for i in 0 ..< 8 {
@@ -77,7 +79,7 @@ public func ^(lhs: UInt256, rhs: UInt256) -> UInt256 {
     return res
 }
 
-public prefix func ~(lhs: UInt256) -> UInt256 {
+public prefix func ~ (lhs: UInt256) -> UInt256 {
     var res: UInt256 = UInt256.allZeros
 
     for i in 0 ..< 8 {
@@ -87,7 +89,7 @@ public prefix func ~(lhs: UInt256) -> UInt256 {
     return res
 }
 
-public func <<= (lhs: inout UInt256, rhs: Int) -> () {
+public func <<= (lhs: inout UInt256, rhs: Int) -> Void {
     lhs = lhs << rhs
 }
 
@@ -126,7 +128,7 @@ public func << (lhs: UInt256, rhs: Int) -> UInt256 {
 
                 result[i] = lhs[i] << 1
 
-                if (overflow) {
+                if overflow {
                     result[i] = result[i] + 1
                 }
 
@@ -143,7 +145,7 @@ public func >> (lhs: UInt256, rhs: Int) -> UInt256 {
     case let x where x >= 256:
         return UInt256.allZeros
     case 255:
-        return UInt256(lhs[7] & 2147483648, 0, 0, 0, 0, 0, 0, 0)
+        return UInt256(lhs[7] & 2_147_483_648, 0, 0, 0, 0, 0, 0, 0)
     case 128:
         return UInt256(0, 0, 0, 0, lhs[0], lhs[1], lhs[2], lhs[3])
     case 64:
@@ -170,21 +172,21 @@ public func >> (lhs: UInt256, rhs: Int) -> UInt256 {
                 let rightMostBit: UInt32 = 0b0000_0000_0000_0000_0000_0000_0000_0001
 
                 let willOverflow = result[i] & rightMostBit != 0
-                
+
                 result[i] = lhs[i] >> 1
-                
-                if (overflow) {
+
+                if overflow {
                     result[i] = result[i] + 0b1000_0000_0000_0000_0000_0000_0000_0000
                 }
-                
+
                 overflow = willOverflow
             }
         }
-        
+
         return result
     }
 }
 
-public func >>= (lhs: inout UInt256, rhs: Int) -> () {
+public func >>= (lhs: inout UInt256, rhs: Int) -> Void {
     lhs = lhs >> rhs
 }

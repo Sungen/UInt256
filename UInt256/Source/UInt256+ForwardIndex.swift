@@ -7,7 +7,7 @@
 // TODO: Add tests.
 
 extension UInt256 {
-
+    
     func successor() -> UInt256 {
         return self + UInt256(UInt32(1))
     }
@@ -15,4 +15,5 @@ extension UInt256 {
     func predecessor() -> UInt256 {
         return self + UInt256(UInt32(1))
     }
+    
 }

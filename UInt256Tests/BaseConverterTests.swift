@@ -5,11 +5,11 @@
 //  Created by Sjors Provoost on 24-06-14.
 //
 
+@testable import UInt256
 import XCTest
-import UInt256
 
 class BaseConverterTests: XCTestCase {
-
+    
     override func setUp() {
         super.setUp()
         // Put setup code here. This method is called before the invocation of each test method in the class.
@@ -33,4 +33,5 @@ class BaseConverterTests: XCTestCase {
         let hex: String = "FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF"
         XCTAssertEqual(BaseConverter.decToHex(decimal), hex, "Converts huge")
     }
+    
 }

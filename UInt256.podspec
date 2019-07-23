@@ -1,7 +1,7 @@
 
 Pod::Spec.new do |s|
   s.name             = 'UInt256'
-  s.version          = '1.0.2'
+  s.version          = '1.1.0'
   s.summary          = 'A short description of UInt256.'
 
   s.description      = <<-DESC
@@ -16,13 +16,7 @@ TODO: Add long description of the pod here.
   s.ios.deployment_target = '9.0'
   s.pod_target_xcconfig = { 'ENABLE_BITCODE' => 'NO', 'SWIFT_SUPPRESS_WARNINGS' => 'YES' }
   
-  s.subspec 'CUInt256' do |ss|
-    ss.source_files = 'Sources/CUInt256/**/*.{h,c}'
-    ss.public_header_files = 'Sources/CUInt256/**/*.h'
-  end
-
-  s.subspec 'UInt256' do |ss|
-    ss.source_files = 'Sources/UInt256/**/*.{swift}'
-  end
+  s.source_files = 'UInt256/Source/**/*.{swift,h,c}'
+  s.public_header_files = 'UInt256/Source/**/*.h'
 
 end

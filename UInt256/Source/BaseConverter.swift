@@ -7,6 +7,7 @@
 
 // Convert between strings in arbitrary base, ported from http://danvk.org/hex2dec.html
 public struct BaseConverter {
+    
     let base: Int
 
     // Adds two arrays for the given base (10 or 16)
@@ -16,11 +17,11 @@ public struct BaseConverter {
 
         var carry = 0
         var i = 0
-        while (i < n || carry > 0) {
+        while i < n || carry > 0 {
             let xi = i < x.count ? x[i] : 0
             let yi = i < y.count ? y[i] : 0
             let zi = carry + xi + yi
-            z.append(zi % self.base)
+            z.append(zi % base)
             carry = zi / base
             i += 1
         }
@@ -35,19 +36,19 @@ public struct BaseConverter {
 
         var numU: UInt32 = UInt32(num)
 
-        if (numU == 0) {
+        if numU == 0 {
             return []
         }
 
         var result: [Int] = []
         var power = x
 
-        while (true) {
+        while true {
             if numU & 1 > 0 {
                 result = add(result, y: power)
             }
             numU = numU >> 1
-            if (numU == 0) {
+            if numU == 0 {
                 break
             }
             power = add(power, y: power)
@@ -58,7 +59,7 @@ public struct BaseConverter {
 
     func parseToDigitsArray(_ str: String) -> [Int] {
         var digits: [String] = []
-        for char in str.characters {
+        for char in str {
             digits.append(String(char))
         }
 
@@ -106,8 +107,7 @@ public struct BaseConverter {
     }
 
     func stringToInt(_ digit: String) -> Int? {
-
-        switch self.base {
+        switch base {
         case 2, 3, 4, 5, 6, 7, 8, 9, 10:
             return Int(digit)
         case 16:
@@ -138,8 +138,7 @@ public struct BaseConverter {
     }
 
     func intToString(_ digit: Int) -> String {
-
-        switch self.base {
+        switch base {
         case 2, 3, 4, 5, 6, 7, 8, 9, 10:
             return digit.description
         case 16:
@@ -181,4 +180,5 @@ public struct BaseConverter {
     public static func hexToDec(_ hexStr: String) -> String {
         return convertBase(hexStr, fromBase: 16, toBase: 10)
     }
+    
 }

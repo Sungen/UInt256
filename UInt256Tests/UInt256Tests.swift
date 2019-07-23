@@ -5,11 +5,11 @@
 //  Created by Sjors Provoost on 24-06-14.
 //
 
+@testable import UInt256
 import XCTest
-import UInt256
 
 class UInt256Tests: XCTestCase {
-
+    
     override func setUp() {
         super.setUp()
         // Put setup code here. This method is called before the invocation of each test method in the class.
@@ -35,7 +35,7 @@ class UInt256Tests: XCTestCase {
 
     func testInitWithIntHexLiterals() {
         let a = UInt256(hexString: "FFFFFFFFFFFFFFFF")
-        let b = UInt256(0, 0, 0, 0, 0, 0, 0xFFFFFFFF, 0xFFFFFFFF)
+        let b = UInt256(0, 0, 0, 0, 0, 0, 0xFFFF_FFFF, 0xFFFF_FFFF)
 
         XCTAssertTrue(a == b, b.description)
     }
@@ -51,22 +51,12 @@ class UInt256Tests: XCTestCase {
         XCTAssertTrue(a == c, c.description)
         XCTAssertTrue(a == e, e.description)
 
-        if CGFLOAT_IS_DOUBLE == 1 {
-            let f = UInt256(322122547232212254)
-            XCTAssertTrue(f.toDecimalString == "322122547232212254", "")
+        // 32 bit values (no longer allowed):
+        //        let d: UInt256 = 3221225472
+        //        XCTAssertTrue(d.toDecimalString == "3221225472", "")
 
-            let d: UInt256 = UInt256(Int64(1000000000000000000))
-            XCTAssertTrue(d.toDecimalString == "1000000000000000000", "")
-
-            let g: UInt256 = UInt256(UInt64(1000000000000000000))
-            XCTAssertTrue(g.toDecimalString == "1000000000000000000", "")
-
-            let h: UInt256 = UInt256(Int64(1000000000000000009))
-            XCTAssertTrue(h.toDecimalString == "1000000000000000009", "")
-
-            let i = UInt256(1000000000000000000)
-            XCTAssertTrue(i.toDecimalString == "1000000000000000000", "")
-        }
+        let f = UInt256(3_221_225_472)
+        XCTAssertTrue(f.toDecimalString == "3221225472", "")
     }
 
     func testInitWithDecimal() {
@@ -109,7 +99,7 @@ class UInt256Tests: XCTestCase {
         let b = UInt256(decimalString: "65534")
         let c = UInt256.allZeros
 
-        if (a == c || b == c) {
+        if a == c || b == c {
             XCTAssertTrue(false, "Not zero")
         }
 
@@ -151,4 +141,5 @@ class UInt256Tests: XCTestCase {
         XCTAssertFalse(smaller >= bigger, "Should compare")
         XCTAssertFalse(bigger <= smaller, "Should compare")
     }
+    
 }
